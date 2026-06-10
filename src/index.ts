@@ -89,6 +89,7 @@ export async function startServer() {
         });
         const openAIRouter = createOpenAIRouter(geminiClient);
         app.use("/openai", openAIRouter);
+        app.use("/v1", openAIRouter);
 
         const anthropicRouter = createAnthropicRouter(geminiClient);
         app.use("/anthropic", anthropicRouter);

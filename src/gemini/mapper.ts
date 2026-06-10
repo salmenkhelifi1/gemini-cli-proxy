@@ -3,7 +3,7 @@ import type {JsonSchema} from "../types/types.js";
 
 export const mapModelToGemini = (model?: string): Gemini.Model => {
     if (model === undefined) {
-        return Gemini.Model.Gemini25Pro;
+        return Gemini.Model.Gemini3FlashPreview;
     }
 
     // Check if the model string is one of the valid enum values
@@ -12,7 +12,7 @@ export const mapModelToGemini = (model?: string): Gemini.Model => {
         return model as Gemini.Model;
     }
 
-    return Gemini.Model.Gemini25Pro;
+    return Gemini.Model.Gemini3FlashPreview;
 };
 
 
@@ -70,6 +70,13 @@ const resolveJsonSchemaDefinitions = (schema: JsonSchema, definitions: Record<st
     return result;
 };
 
+const SUPPORTED_JSONSCHEMA_FIELDS = new Set([
+    "type", "properties", "items", "required", "description", "enum", "nullable",
+    "additionalProperties", "minLength", "maxLength", "minimum", "maximum",
+    "minItems", "maxItems", "format", "pattern", "default", "const",
+    "allOf", "oneOf", "anyOf", "not",
+]);
+
 const convertJsonSchemaObject = (schema: JsonSchema): JsonSchema => {
     if (!schema || typeof schema !== "object") {
         return schema;
@@ -82,8 +89,7 @@ const convertJsonSchemaObject = (schema: JsonSchema): JsonSchema => {
     const result: JsonSchema = {};
 
     for (const [key, value] of Object.entries(schema)) {
-        if (key === "definitions" || key === "$schema") {
-            // Skip definitions and $schema in the output
+        if (!SUPPORTED_JSONSCHEMA_FIELDS.has(key)) {
             continue;
         }
 

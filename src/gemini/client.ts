@@ -55,7 +55,7 @@ export class GeminiApiClient {
         }
 
         try {
-            const initialProjectId = "default-project";
+            const initialProjectId = "cloudshell-gca";
             const loadResponse = (await this.callEndpoint("loadCodeAssist", {
                 cloudaicompanionProject: initialProjectId,
                 metadata: {duetProject: initialProjectId},
